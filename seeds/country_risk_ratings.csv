@@ -1,0 +1,11 @@
+country_name,risk_tier,is_high_risk,fraud_multiplier
+United Kingdom,LOW,false,1.0
+United States,LOW,false,1.1
+Germany,LOW,false,1.0
+France,LOW,false,1.0
+India,MEDIUM,false,1.3
+Nigeria,HIGH,true,2.5
+Russia,HIGH,true,2.8
+Unknown,CRITICAL,true,3.0
+Brazil,MEDIUM,false,1.5
+China,MEDIUM,false,1.4

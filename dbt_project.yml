@@ -1,0 +1,37 @@
+name: 'kavya_banking'
+version: '1.0.0'
+config-version: 2
+
+profile: 'kavya_banking'
+
+model-paths:     ["models"]
+seed-paths:      ["seeds"]
+test-paths:      ["tests"]
+macro-paths:     ["macros"]
+snapshot-paths:  ["snapshots"]
+analysis-paths:  ["analyses"]
+
+target-path:     "target"
+clean-targets:   ["target", "dbt_packages"]
+
+models:
+  kavya_banking:
+    staging:
+      +schema:          KAVYA_STAGE
+      +materialized:    view
+      +tags:            ["staging"]
+
+    intermediate:
+      +schema:          KAVYA_STAGE
+      +materialized:    table
+      +tags:            ["intermediate"]
+
+    marts:
+      +schema:          KAVYA_ANALYTICS
+      +materialized:    table
+      +tags:            ["marts"]
+
+seeds:
+  kavya_banking:
+    +schema:  KAVYA_STAGE
+    +tags:    ["seed"]

@@ -1,0 +1,133 @@
+version: 2
+
+sources:
+  - name: kavya_raw
+    database: KAVYA_DB
+    schema: KAVYA_RAW
+    description: "Raw landing zone for the Kavya Retail Banking platform. Data loaded directly from Kaggle CSV files."
+
+    freshness:
+      warn_after:  {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
+
+    loaded_at_field: _LOAD_TIMESTAMP
+
+    tables:
+      - name: RAW_CUSTOMERS
+        description: "Raw customer master data. Grain: one row per customer."
+        columns:
+          - name: CUSTOMER_ID
+            description: "Primary key — unique customer identifier"
+            tests: [unique, not_null]
+          - name: FIRST_NAME
+            tests: [not_null]
+          - name: LAST_NAME
+            tests: [not_null]
+          - name: CUSTOMER_SEGMENT
+            tests:
+              - accepted_values:
+                  values: ['RETAIL', 'PREMIUM', 'SME']
+          - name: KYC_STATUS
+            tests:
+              - accepted_values:
+                  values: ['VERIFIED', 'PENDING']
+
+      - name: RAW_ACCOUNTS
+        description: "Raw bank accounts. Grain: one row per account."
+        columns:
+          - name: ACCOUNT_ID
+            description: "Primary key — unique account identifier"
+            tests: [unique, not_null]
+          - name: CUSTOMER_ID
+            tests:
+              - not_null
+              - relationships:
+                  to: source('kavya_raw', 'RAW_CUSTOMERS')
+                  field: CUSTOMER_ID
+          - name: ACCOUNT_TYPE
+            tests:
+              - accepted_values:
+                  values: ['CURRENT', 'SAVINGS', 'ISA', 'LOAN']
+          - name: ACCOUNT_STATUS
+            tests:
+              - accepted_values:
+                  values: ['ACTIVE', 'CLOSED', 'FROZEN']
+
+      - name: RAW_TRANSACTIONS
+        description: "Raw financial transactions. Grain: one row per transaction."
+        columns:
+          - name: TRANSACTION_ID
+            description: "Primary key — unique transaction identifier"
+            tests: [unique, not_null]
+          - name: ACCOUNT_ID
+            tests:
+              - not_null
+              - relationships:
+                  to: source('kavya_raw', 'RAW_ACCOUNTS')
+                  field: ACCOUNT_ID
+          - name: AMOUNT
+            tests: [not_null]
+          - name: TRANSACTION_DATE
+            tests: [not_null]
+          - name: STATUS
+            tests:
+              - accepted_values:
+                  values: ['COMPLETED', 'PENDING', 'REVERSED']
+
+      - name: RAW_FRAUD_ALERTS
+        description: "Raw fraud investigation alerts. Grain: one row per alert."
+        columns:
+          - name: ALERT_ID
+            tests: [unique, not_null]
+          - name: TRANSACTION_ID
+            tests:
+              - not_null
+              - relationships:
+                  to: source('kavya_raw', 'RAW_TRANSACTIONS')
+                  field: TRANSACTION_ID
+          - name: ALERT_SEVERITY
+            tests:
+              - accepted_values:
+                  values: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
+
+      - name: RAW_PRODUCTS
+        description: "Raw banking product catalogue. Grain: one row per product."
+        columns:
+          - name: PRODUCT_ID
+            tests: [unique, not_null]
+          - name: PRODUCT_NAME
+            tests: [not_null]
+
+      - name: RAW_BRANCHES
+        description: "Raw branch master data. Grain: one row per branch."
+        columns:
+          - name: BRANCH_ID
+            tests: [unique, not_null]
+          - name: BRANCH_NAME
+            tests: [not_null]
+
+      - name: RAW_CUSTOMER_PRODUCTS
+        description: "Raw customer-product subscriptions. Grain: one row per subscription."
+        columns:
+          - name: SUBSCRIPTION_ID
+            tests: [unique, not_null]
+          - name: CUSTOMER_ID
+            tests:
+              - not_null
+              - relationships:
+                  to: source('kavya_raw', 'RAW_CUSTOMERS')
+                  field: CUSTOMER_ID
+          - name: PRODUCT_ID
+            tests:
+              - not_null
+              - relationships:
+                  to: source('kavya_raw', 'RAW_PRODUCTS')
+                  field: PRODUCT_ID
+
+      - name: RAW_EXCHANGE_RATES
+        description: "Daily FX rates with GBP as base currency. Grain: one row per currency pair per date."
+        columns:
+          - name: RATE_DATE
+            tests: [not_null]
+          - name: EXCHANGE_RATE
+            tests: [not_null]

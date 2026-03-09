@@ -1,0 +1,14 @@
+category_code,category_name,category_group,is_essential
+GROCERIES,Groceries,Essential,true
+TRANSPORT,Transport,Essential,true
+UTILITIES,Utilities,Essential,true
+SALARY,Salary,Income,false
+INTEREST,Interest Income,Income,false
+DINING,Dining Out,Discretionary,false
+SHOPPING,Shopping,Discretionary,false
+ENTERTAINMENT,Entertainment,Discretionary,false
+GAMBLING,Gambling,High Risk,false
+ONLINE_PURCHASE,Online Purchase,Discretionary,false
+ATM_WITHDRAWAL,ATM Withdrawal,Cash,false
+BUSINESS,Business Expense,Business,false
+INTERNAL_TRANSFER,Internal Transfer,Transfer,false

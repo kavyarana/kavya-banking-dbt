@@ -1,0 +1,129 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Dimension: one row per customer with credit tier and account stats."
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: customer_key
+        description: "MD5 surrogate key"
+        data_type: varchar
+        tests: [unique, not_null]
+      - name: customer_id
+        data_type: varchar
+        tests: [unique, not_null]
+      - name: full_name
+        data_type: varchar
+        tests: [not_null]
+      - name: first_name
+        data_type: varchar
+      - name: last_name
+        data_type: varchar
+      - name: date_of_birth
+        data_type: date
+      - name: gender
+        data_type: varchar
+      - name: city
+        data_type: varchar
+      - name: country
+        data_type: varchar
+      - name: postcode
+        data_type: varchar
+      - name: customer_segment
+        data_type: varchar
+        tests:
+          - accepted_values:
+              values: ['RETAIL', 'PREMIUM', 'SME']
+      - name: kyc_status
+        data_type: varchar
+      - name: credit_score
+        data_type: number
+      - name: is_active
+        data_type: boolean
+      - name: customer_since
+        data_type: date
+      - name: total_accounts
+        data_type: number
+      - name: total_balance_gbp
+        data_type: float
+      - name: max_account_balance
+        data_type: float
+      - name: earliest_account_date
+        data_type: date
+      - name: credit_tier
+        data_type: varchar
+        tests:
+          - accepted_values:
+              values: ['EXCELLENT', 'GOOD', 'FAIR', 'POOR']
+      - name: load_timestamp
+        data_type: timestamp_ntz
+
+  - name: dim_accounts
+    description: "Dimension: one row per account with branch and product context."
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: account_key
+        data_type: varchar
+        tests: [unique, not_null]
+      - name: account_id
+        data_type: varchar
+        tests: [unique, not_null]
+      - name: customer_id
+        data_type: varchar
+        tests: [not_null]
+      - name: account_type
+        data_type: varchar
+      - name: account_status
+        data_type: varchar
+      - name: currency_code
+        data_type: varchar
+      - name: current_balance
+        data_type: float
+      - name: overdraft_limit
+        data_type: float
+      - name: interest_rate
+        data_type: float
+      - name: sort_code
+        data_type: varchar
+      - name: open_date
+        data_type: date
+      - name: close_date
+        data_type: date
+      - name: branch_id
+        data_type: varchar
+      - name: branch_name
+        data_type: varchar
+      - name: branch_type
+        data_type: varchar
+      - name: branch_city
+        data_type: varchar
+      - name: branch_region
+        data_type: varchar
+      - name: product_name
+        data_type: varchar
+      - name: monthly_fee
+        data_type: float
+      - name: account_age_days
+        data_type: number
+      - name: is_active
+        data_type: boolean
+      - name: load_timestamp
+        data_type: timestamp_ntz
+
+  - name: fct_transactions
+    description: "Fact: one row per transaction. Incremental load with 3-day late arrival window."
+    columns:
+      - name: transaction_key
+        tests: [unique, not_null]
+      - name: transaction_id
+        tests: [unique, not_null]
+      - name: amount_gbp
+        tests: [not_null]
+      - name: risk_level
+        tests:
+          - accepted_values:
+              values: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']

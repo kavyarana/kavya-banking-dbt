@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Staging: cleaned and deduplicated customer master data. Materialized as view."
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+      - name: full_name
+        tests: [not_null]
+      - name: customer_segment
+        tests:
+          - accepted_values:
+              values: ['RETAIL', 'PREMIUM', 'SME']
+      - name: kyc_status
+        tests:
+          - accepted_values:
+              values: ['VERIFIED', 'PENDING']
+
+  - name: stg_accounts
+    description: "Staging: cleaned and deduplicated bank accounts. Materialized as view."
+    columns:
+      - name: account_id
+        tests: [unique, not_null]
+      - name: customer_id
+        tests: [not_null]
+      - name: account_type
+        tests:
+          - accepted_values:
+              values: ['CURRENT', 'SAVINGS', 'ISA', 'LOAN']
+
+  - name: stg_transactions
+    description: "Staging: cleaned, deduplicated and validated transactions. Materialized as view."
+    columns:
+      - name: transaction_id
+        tests: [unique, not_null]
+      - name: account_id
+        tests: [not_null]
+      - name: amount
+        tests: [not_null]
+
+  - name: stg_fraud_alerts
+    description: "Staging: cleaned fraud investigation alerts. Materialized as view."
+    columns:
+      - name: alert_id
+        tests: [unique, not_null]
+      - name: transaction_id
+        tests: [not_null]
+
+  - name: stg_products
+    description: "Staging: cleaned banking product catalogue. Materialized as view."
+    columns:
+      - name: product_id
+        tests: [unique, not_null]
+
+  - name: stg_branches
+    description: "Staging: cleaned branch master data. Materialized as view."
+    columns:
+      - name: branch_id
+        tests: [unique, not_null]
+
+  - name: stg_customer_products
+    description: "Staging: cleaned customer-product subscriptions. Materialized as view."
+    columns:
+      - name: subscription_id
+        tests: [unique, not_null]
+
+  - name: stg_exchange_rates
+    description: "Staging: cleaned daily FX rates. Materialized as view."
+    columns:
+      - name: rate_date
+        tests: [not_null]
+      - name: exchange_rate
+        tests: [not_null]
