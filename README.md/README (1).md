@@ -11,9 +11,9 @@
 
 ## 📌 Project Overview
 
-A production-grade **Retail Banking Analytics Platform** built on **Snowflake** and **dbt**, modelled on a Monzo-style fintech use case. The project covers the full data engineering lifecycle — from environment setup and raw ingestion through to CDC pipelines, a star schema mart layer with incremental loading, data contracts, 82 automated tests, and a CI/CD deployment design.
+A production-grade **Retail Banking Analytics Platform** built on **Snowflake** and **dbt**, modelled on a Monzo-style fintech use case. The project covers the full data engineering lifecycle  from environment setup and raw ingestion through to CDC pipelines, a star schema mart layer with incremental loading, data contracts, 82 automated tests, and a CI/CD deployment design.
 
-**Domain:** Retail Banking — Fraud Detection & Customer Analytics  
+**Domain:** Retail Banking  Fraud Detection & Customer Analytics  
 **Dataset:** Kaggle Bank Transaction Dataset for Fraud Detection  
 **Database:** Snowflake (KAVYA_DB)  
 **Schemas:** KAVYA_RAW · KAVYA_STAGE · KAVYA_ANALYTICS
@@ -178,7 +178,7 @@ RAW_FRAUD_ALERTS  →  STM_FRAUD_ALERTS  →  TSK_PROCESS_FRAUD_ALERTS (every 1 
 ## 🔶 Phase 4 — dbt Transformation Pipeline
 
 ### Staging Layer (view)
-Lightweight renaming, casting, deduplication and null filtering. Zero storage cost — always reflects latest raw data.
+Lightweight renaming, casting, deduplication and null filtering. Zero storage cost  always reflects latest raw data.
 
 ### Intermediate Layer (table)
 
